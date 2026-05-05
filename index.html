@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitectura Vernácula y Brutalista en San José</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <style>
+    :root {
+      --bg: #0e0f1a;
+      --panel: #161a2d;
+      --text: #f4f4f5;
+      --accent: #5eead4;
+      --accent-2: #f59e0b;
+      --muted: #b0b6c3;
+      --glass: rgba(255,255,255,0.05);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 15% 15%, #1f2644 0%, var(--bg) 45%, #0a0b14 100%);
+      line-height: 1.6;
+    }
+    header {
+      min-height: 85vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      width: 1200px;
+      height: 1200px;
+      border-radius: 50%;
+      background: conic-gradient(from 110deg, #5eead466, #f59e0b44, #38bdf844, #5eead466);
+      filter: blur(40px);
+      animation: rotate 30s linear infinite;
+      z-index: -1;
+    }
+    @keyframes rotate { to { transform: rotate(360deg); } }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 4rem);
+      margin-bottom: 0.75rem;
+      text-wrap: balance;
+    }
+    .subtitle { max-width: 820px; color: var(--muted); margin: 0 auto; }
+    nav {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(10, 12, 22, 0.8);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      padding: .75rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      padding: .5rem .8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.15);
+      transition: .2s;
+      font-size: .9rem;
+    }
+    nav a:hover { background: var(--glass); border-color: var(--accent); }
+    main {
+      width: min(1200px, 95vw);
+      margin: 2rem auto 5rem;
+      display: grid;
+      gap: 2rem;
+    }
+    .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 1.2rem 1.2rem 1.6rem;
+      box-shadow: 0 20px 30px rgba(0,0,0,.2);
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      margin-top: 0;
+      margin-bottom: .5rem;
+    }
+    .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+    .tag { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; }
+    ul { padding-left: 1.2rem; }
+    .architect {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: .9rem;
+      margin-bottom: .7rem;
+    }
+    .architect h4 { margin: 0 0 .4rem; }
+    .map-wrap { display: grid; gap: 1rem; }
+    .map { height: 420px; border-radius: 12px; overflow: hidden; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; }
+    .gallery figure { margin: 0; background: rgba(255,255,255,.03); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); }
+    .gallery img { width: 100%; height: 130px; object-fit: cover; display: block; }
+    .gallery figcaption { padding: .5rem; font-size: .82rem; color: var(--muted); }
+    .video-box { position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; border:1px solid rgba(255,255,255,.12); }
+    .video-box iframe { position:absolute; inset: 0; width:100%; height:100%; }
+    footer { text-align: center; color: var(--muted); padding: 2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Arquitectura Vernácula y Brutalista<br>en San José (Casco Central)</h1>
+      <p class="subtitle">Proyecto interactivo para <strong>Técnicas de Presentación</strong>. Explora historia, características, materiales, impulsores y mapa de inmuebles representativos en una experiencia visual dinámica.</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#vernacula">Vernácula</a>
+    <a href="#brutalista">Brutalista</a>
+    <a href="#mapas">Mapas + imágenes</a>
+    <a href="#videos">Videos</a>
+  </nav>
+
+  <main>
+    <section id="vernacula" class="card">
+      <p class="tag">Tema 1</p>
+      <h2 class="section-title">Arquitectura Vernácula</h2>
+      <div class="two-col">
+        <article>
+          <h3>Definición del movimiento</h3>
+          <p>La arquitectura vernácula es la construcción que surge de los saberes locales, del clima, de los materiales disponibles en la región y de las costumbres de la comunidad. En San José, se adaptó principalmente al contexto del Valle Central, combinando influencias coloniales y republicanas con técnicas tradicionales costarricenses.</p>
+          <h3>Historia en San José (casco central)</h3>
+          <p>Durante los siglos XIX e inicios del XX, el casco central de San José incorporó viviendas y edificios con estructuras de bahareque, adobe y madera, con corredores y patios internos para ventilación. Con el crecimiento urbano y nuevas normativas sísmicas, muchos inmuebles fueron transformados, aunque sobreviven ejemplos en barrios históricos y edificios patrimoniales cercanos al centro.</p>
+        </article>
+        <article>
+          <h3>Características principales</h3>
+          <ul>
+            <li>Adaptación climática: aleros amplios, patios y ventilación cruzada.</li>
+            <li>Escala humana y relación directa con la calle o el patio.</li>
+            <li>Uso de técnicas artesanales y mano de obra local.</li>
+            <li>Ornamentación sencilla, enfocada en función y tradición.</li>
+          </ul>
+          <h3>Materiales principales</h3>
+          <ul>
+            <li>Adobe y bahareque.</li>
+            <li>Madera local para estructura, pisos y acabados.</li>
+            <li>Teja de barro y cal para revestimientos.</li>
+            <li>Piedra en basamentos y elementos de soporte.</li>
+          </ul>
+        </article>
+      </div>
+      <h3>Impulsores / referentes (Costa Rica)</h3>
+      <div class="architect"><h4>Teodorico Quirós Alvarado (1897–1977)</h4><p>Arquitecto y pintor costarricense. Defendió la valoración de la casa tradicional del Valle Central y la identidad constructiva local. Su obra e investigación visual ayudaron a consolidar el interés por el patrimonio vernáculo.</p></div>
+      <div class="architect"><h4>José María Barrantes (referente patrimonial)</h4><p>Investigador y difusor de prácticas constructivas tradicionales. Su trabajo académico y de documentación apoyó la protección de inmuebles de carácter vernáculo en áreas urbanas históricas.</p></div>
+      <div class="architect"><h4>Andrés Fernández (conservación arquitectónica)</h4><p>Profesional vinculado a procesos de conservación y lectura histórica de edificaciones antiguas. Ha promovido el uso de criterios técnicos para restaurar inmuebles de valor cultural.</p></div>
+    </section>
+
+    <section id="brutalista" class="card">
+      <p class="tag" style="color: var(--accent-2)">Tema 2</p>
+      <h2 class="section-title">Arquitectura Brutalista</h2>
+      <div class="two-col">
+        <article>
+          <h3>Definición del movimiento</h3>
+          <p>El brutalismo es un movimiento arquitectónico del siglo XX caracterizado por la expresión honesta de la estructura, volúmenes geométricos contundentes y el uso visible de concreto expuesto (béton brut).</p>
+          <h3>Historia en San José (casco central)</h3>
+          <p>En San José, el brutalismo ganó presencia entre las décadas de 1960 y 1980, especialmente en edificios institucionales, universitarios y financieros. El crecimiento del Estado y de infraestructuras urbanas impulsó construcciones de gran escala, de imagen sólida y lenguaje moderno.</p>
+        </article>
+        <article>
+          <h3>Características principales</h3>
+          <ul>
+            <li>Concreto expuesto como material protagonista.</li>
+            <li>Volúmenes masivos, repetición modular y formas escultóricas.</li>
+            <li>Énfasis en funcionalidad y estructura visible.</li>
+            <li>Iluminación dramática mediante vacíos, pórticos y relieves.</li>
+          </ul>
+          <h3>Materiales principales</h3>
+          <ul>
+            <li>Hormigón armado (concreto).</li>
+            <li>Acero para refuerzo estructural.</li>
+            <li>Vidrio en franjas o paños verticales.</li>
+            <li>Piedra y prefabricados en algunos acabados.</li>
+          </ul>
+        </article>
+      </div>
+      <h3>Impulsores / referentes</h3>
+      <div class="architect"><h4>Le Corbusier (1887–1965)</h4><p>Arquitecto franco-suizo, precursor del uso expresivo del béton brut. Su influencia conceptual impactó fuertemente al brutalismo internacional.</p></div>
+      <div class="architect"><h4>Alison y Peter Smithson</h4><p>Arquitectos británicos asociados al “New Brutalism”. Impulsaron una arquitectura socialmente comprometida y de lenguaje estructural directo.</p></div>
+      <div class="architect"><h4>Paul Rudolph (1918–1997)</h4><p>Arquitecto estadounidense reconocido por complejas composiciones de concreto y espacios académicos monumentales, referente en América.</p></div>
+    </section>
+
+    <section id="mapas" class="card map-wrap">
+      <h2 class="section-title">Ubicación en mapa de inmuebles representativos</h2>
+      <p>Haz clic en los marcadores para ver la referencia del inmueble y abrir una imagen o ficha descriptiva.</p>
+      <div id="map" class="map"></div>
+      <div class="gallery">
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7d/Teatro_Nacional_de_Costa_Rica.jpg" alt="Teatro Nacional de Costa Rica">
+          <figcaption>Teatro Nacional (referencia histórica cercana al casco central).</figcaption>
+        </figure>
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Edificio_Caja_Costarricense_de_Seguro_Social%2C_San_Jose.jpg" alt="Edificio CCSS">
+          <figcaption>Ejemplo institucional moderno asociado a lenguaje masivo.</figcaption>
+        </figure>
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Barrio_Amon.jpg" alt="Barrio Amón">
+          <figcaption>Viviendas tradicionales y repertorio vernáculo/republicano.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="videos" class="card two-col">
+      <article>
+        <h2 class="section-title">Video interactivo: Vernácula</h2>
+        <div class="video-box">
+          <iframe src="https://www.youtube.com/embed/UPqYQfVWaKQ" title="Arquitectura Vernácula" allowfullscreen></iframe>
+        </div>
+      </article>
+      <article>
+        <h2 class="section-title">Video interactivo: Brutalismo</h2>
+        <div class="video-box">
+          <iframe src="https://www.youtube.com/embed/vtQmKx7r6a4" title="Arquitectura Brutalista" allowfullscreen></iframe>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    Proyecto listo para publicar en <strong>GitHub Pages</strong>. Sugerencia: agrega este archivo como <code>index.html</code> en la rama <code>main</code>.
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const map = L.map('map').setView([9.9325, -84.0796], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const places = [
+      { name: 'Barrio Amón (Vernácula/Republicana)', coords: [9.9368, -84.0758], link: 'https://es.wikipedia.org/wiki/Barrio_Am%C3%B3n' },
+      { name: 'Barrio Otoya (tradición residencial)', coords: [9.9354, -84.0708], link: 'https://es.wikipedia.org/wiki/Barrio_Otoya' },
+      { name: 'Edificio CCSS (lenguaje moderno/brutalista)', coords: [9.9338, -84.0834], link: 'https://es.wikipedia.org/wiki/Caja_Costarricense_de_Seguro_Social' },
+      { name: 'Banco Central de Costa Rica (masividad institucional)', coords: [9.9333, -84.0762], link: 'https://es.wikipedia.org/wiki/Banco_Central_de_Costa_Rica' },
+      { name: 'Asamblea Legislativa (referencia moderna)', coords: [9.9371, -84.0731], link: 'https://es.wikipedia.org/wiki/Asamblea_Legislativa_de_Costa_Rica' }
+    ];
+
+    places.forEach(p => {
+      L.marker(p.coords)
+        .addTo(map)
+        .bindPopup(`<strong>${p.name}</strong><br><a href="${p.link}" target="_blank">Ver referencia</a>`);
+    });
+  </script>
+</body>
+</html>
