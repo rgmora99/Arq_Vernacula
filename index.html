@@ -10,20 +10,22 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <style>
     :root {
-      --bg: #0e0f1a;
-      --panel: #161a2d;
-      --text: #f4f4f5;
-      --accent: #5eead4;
-      --accent-2: #f59e0b;
-      --muted: #b0b6c3;
-      --glass: rgba(255,255,255,0.05);
+      --bg: #101b2f;
+      --panel: #19233e;
+      --text: #f3e9d5;
+      --accent: #b33a3f;
+      --accent-2: #6d86b0;
+      --accent-3: #e4d4b4;
+      --muted: #c8b9a2;
+      --glass: rgba(227, 216, 191, 0.08);
+      --border: rgba(227, 216, 191, 0.14);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at 15% 15%, #1f2644 0%, var(--bg) 45%, #0a0b14 100%);
+      background: radial-gradient(circle at 15% 15%, #3b4d72 0%, var(--bg) 42%, #090b14 100%);
       line-height: 1.6;
       animation: fadeInBody 900ms ease-out both;
     }
@@ -42,7 +44,7 @@
       width: 1200px;
       height: 1200px;
       border-radius: 50%;
-      background: conic-gradient(from 110deg, #5eead466, #f59e0b44, #38bdf844, #5eead466);
+      background: conic-gradient(from 110deg, #b33a3f44, #e4d4b455, #6d86b066, #101b2f44);
       filter: blur(40px);
       animation: rotate 30s linear infinite;
       z-index: -1;
@@ -59,7 +61,7 @@
       position: sticky;
       top: 0;
       backdrop-filter: blur(8px);
-      background: rgba(10, 12, 22, 0.8);
+      background: rgba(17, 24, 41, 0.86);
       border-top: 1px solid rgba(255,255,255,0.08);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       z-index: 20;
@@ -78,7 +80,7 @@
       transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
       font-size: .9rem;
     }
-    nav a:hover { background: var(--glass); border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(94,234,212,.16); }
+    nav a:hover { background: var(--glass); border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(179,58,63,.18); }
     main {
       width: min(1200px, 95vw);
       margin: 2rem auto 5rem;
@@ -86,17 +88,17 @@
       gap: 2rem;
     }
     .card {
-      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(135deg, rgba(255,235,206,0.08), rgba(16,27,47,0.55));
+      border: 1px solid var(--border);
       border-radius: 20px;
       padding: 1.2rem 1.2rem 1.6rem;
-      box-shadow: 0 20px 30px rgba(0,0,0,.2);
+      box-shadow: 0 20px 30px rgba(0,0,0,.22);
       transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
     }
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 26px 40px rgba(0,0,0,.28);
-      border-color: rgba(94, 234, 212, .35);
+      box-shadow: 0 26px 40px rgba(0,0,0,.3);
+      border-color: rgba(179,58,63,.35);
     }
     .section-title {
       font-family: 'Playfair Display', serif;
@@ -108,8 +110,8 @@
     .tag { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; }
     ul { padding-left: 1.2rem; }
     .architect {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(228,212,180,0.08);
+      border: 1px solid rgba(228,212,180,0.16);
       border-radius: 14px;
       padding: .9rem;
       margin-bottom: .7rem;
@@ -118,13 +120,13 @@
     .map-wrap { display: grid; gap: 1rem; }
     .map { height: 420px; border-radius: 12px; overflow: hidden; }
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; }
-    .gallery figure { margin: 0; background: rgba(255,255,255,.03); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); }
+    .gallery figure { margin: 0; background: rgba(228,212,180,0.06); border-radius: 12px; overflow: hidden; border: 1px solid rgba(228,212,180,0.12); }
     .gallery figure { transition: transform .3s ease, box-shadow .3s ease; }
-    .gallery figure:hover { transform: translateY(-3px); box-shadow: 0 14px 24px rgba(0,0,0,.25); }
+    .gallery figure:hover { transform: translateY(-3px); box-shadow: 0 14px 24px rgba(0,0,0,.22); }
     .gallery img { width: 100%; height: 130px; object-fit: cover; display: block; transition: transform .35s ease; }
     .gallery figure:hover img { transform: scale(1.04); }
     .gallery figcaption { padding: .5rem; font-size: .82rem; color: var(--muted); }
-    .video-box { position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; border:1px solid rgba(255,255,255,.12); }
+    .video-box { position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; border:1px solid rgba(228,212,180,.14); }
     .video-box iframe { position:absolute; inset: 0; width:100%; height:100%; }
     footer { text-align: center; color: var(--muted); padding: 2rem; }
 
